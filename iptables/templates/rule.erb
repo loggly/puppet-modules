@@ -1,0 +1,36 @@
+<% 
+  Puppet::Parser::Functions.autoloader.loadall
+  
+  ports_list = ports.is_a?(String) ? [ports] : ports
+  roles_list = roles.is_a?(String) ? [roles] : roles
+  sources_list = sources.is_a?(String) ? [sources] : sources
+
+  # These are :undef by default, assume empty strings if empty.
+  roles_list = [] if roles_list == :undef
+  sources_list = [] if sources_list == :undef
+
+  protocol_flags = {
+    "udp" => "",
+    "tcp" => "--syn",
+    "icmp" => "",
+  }
+
+-%>
+# Rule: <%= name %>
+<% ports.each do |port| -%>
+<%   if !roles_list.empty? -%>
+<%     roles_list.each do |role| -%>
+<%       scope.function_role_addresses(role).each do |address| -%>
+-A INPUT -s <%= address %> -p <%= protocol %> <%= protocol_flags[protocol] %> --dport <%= port %> -j <%= target %> -m comment --comment "<%= name %> (role: <%= role %>)"
+<%       end -%>
+<%     end -%>
+<%   end -%>
+<%   if !sources_list.empty? -%>
+<%     sources_list.each do |address| -%>
+  -A INPUT -s <%= address %> -p <%= protocol %> <%= protocol_flags[protocol ] %> --dport <%= port %> -j <%= target %> -m comment --comment "<%= name %>"
+<%     end -%>
+<%   end -%>
+<%   if any_source -%>
+  -A INPUT -s 0.0.0.0/0 -p <%= protocol %> <%= protocol_flags[protocol ] %> --dport <%= port %> -j <%= target %> -m comment --comment "<%= name %> (any source)"
+<%   end -%>
+<% end -%>

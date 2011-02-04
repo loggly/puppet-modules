@@ -1,0 +1,10 @@
+# allow established connections
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Allow icmp and loopback
+-A INPUT -p icmp -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+
+# Drop multicast and major broadcast, for now.
+-A INPUT -d 255.255.255.255 -j DROP
+-A INPUT -d 224.0.0.0/8 -j DROP

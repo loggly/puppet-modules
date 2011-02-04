@@ -1,0 +1,3 @@
+# log almost anything else
+-A INPUT -j LOG -p udp --log-prefix "blocked inbound " -m limit --limit 6/min
+-A INPUT -j LOG -p tcp --syn --log-prefix "blocked inbound " -m limit --limit 6/min
