@@ -1,0 +1,9 @@
+Origin: loggly
+Label: loggly
+Suite: stable
+Codename: loggly-production
+Version: 1.0
+Architectures: amd64 i386
+Components: main
+Description: Loggly production packages
+SignWith: nobody@loggly.com
