@@ -1,4 +1,4 @@
-class loggly::buildserver {
+class buildserver {
   include ::ubuntu::packagebuilding
   include ::loggly::common
   include ::jenkins
