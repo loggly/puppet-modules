@@ -12,7 +12,11 @@ It puts the package into your apt repo and rebuilds the repo.
 
 ## Apt repo details
 
-I use a combination of reprepro and apt-ftparchive to manage our apt repo.
+I use a combination of apt-ftparchive + custom scripts to manage our apt repo.
 
-reprepro is used to publish packages to the right place. apt-ftparchive is used
-to generate the metadata of which packages exist and computes their checksums.
+I used to use reprepro, but that tool is a pile of shit. It is completely
+infected with debian policies - stuff that gets in my way and enforces opinions
+about things in the code. Do not want.
+
+Publishing packages is done with 'publish.sh' and genrepo.sh manages
+apt-ftparchive and gpg invocations.
