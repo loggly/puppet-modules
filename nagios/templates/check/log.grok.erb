@@ -1,0 +1,23 @@
+program {
+<% files.each do |file| -%>
+  #exec "tail -n0 -F <%= file %>" {
+  exec "rtail -n '<%= file %>'" {
+    restart-on-exit: true
+    minimum-restart-delay: 5
+  }
+<% end -%>
+
+  match {
+<% patterns.each do |pattern| -%>
+    pattern: "<%= pattern.gsub(/"/, "\\\"") %>"
+<% end -%>
+    
+    # NSCA doesn't take events on stdin properly, so hack around it.
+    #shell: "send_nsca -H <%= monitor_host %>"
+    #reaction: "<%= host %>	<%= check_name %>	2	%{@LINE}"
+
+    shell: "/bin/sh -c 'while read line ; do echo \"$line\" | send_nsca -H monitor; done'"
+    reaction: "<%= host %>	<%= check_name %>	2	%{@LINE}"
+    flush: yes
+  }
+}

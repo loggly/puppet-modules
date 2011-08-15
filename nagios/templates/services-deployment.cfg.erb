@@ -1,0 +1,9 @@
+<% require "json" -%>
+<% data = JSON::load(File.new("/etc/truth.json").read) -%>
+
+define service {
+  use base-service
+  hostgroup_name hostgroup:all
+  service_description host ssh tcp check
+  check_command check_tcp!22
+}

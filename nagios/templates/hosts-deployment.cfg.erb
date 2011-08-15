@@ -1,0 +1,16 @@
+<% require "json" -%>
+<% data = JSON::load(File.new("/etc/truth.json").read) -%>
+<% data["servers"].each do |name, info| -%>
+define host {
+  use base-host
+    host_name <%= name %>.<%= deployment_domain %>
+    address <%= info["private_ip_address"] %>
+    alias <%= name %> (<%= info["tags"].grep(/^role:/).collect{|r| r.split(/[:=]/)[1]}.sort.join(", ") %>)
+}
+<% end -%>
+
+define hostgroup {
+  hostgroup_name hostgroup:all
+  alias all servers in <%= deployment %>
+  members <%= data["servers"].keys.collect { |s| "#{s}.#{deployment_domain}" }.join(",") %>
+}
