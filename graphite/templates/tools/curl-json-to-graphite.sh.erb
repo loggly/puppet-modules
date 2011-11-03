@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+
+while true; do 
+  curl "<%= url %>" \
+    | node /usr/local/bin/json-to-graphite.js \
+    graphite://monitor:2003/<%= metric_prefix %> \
+    <%= filter.join(" ") %>
+  sleep <%= interval %>
+done
+
